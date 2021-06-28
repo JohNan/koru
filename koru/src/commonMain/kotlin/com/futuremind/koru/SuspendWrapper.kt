@@ -10,6 +10,10 @@ class SuspendWrapper<T>(
     private val suspender: suspend () -> T
 ) {
 
+    init {
+        freeze()
+    }
+
     fun subscribe(
         onSuccess: (item: T) -> Unit,
         onThrow: (error: Throwable) -> Unit
@@ -18,7 +22,7 @@ class SuspendWrapper<T>(
             ?: throw IllegalArgumentException("To use implicit scope, you have to provide it via @ToNativeClass.launchOnScope and @ExportedScopeProvider."),
         onSuccess = onSuccess,
         onThrow = onThrow
-    )
+    ).freeze()
 
     fun subscribe(
         scope: CoroutineScope,
@@ -30,6 +34,6 @@ class SuspendWrapper<T>(
         } catch (error: Throwable) {
             onThrow(error.freeze())
         }
-    }
+    }.freeze()
 
 }
